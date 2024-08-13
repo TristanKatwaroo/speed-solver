@@ -352,7 +352,7 @@ function startPlaying() {
     if (timerInterval) {
         clearInterval(timerInterval);
     }
-    timerInterval = setInterval(updateTimer, 1000); // Start the game timer
+    timerInterval = setInterval(() => { timer++; }, 1000); // Start the game timer
     gameStarted = true;
 
     document.addEventListener('keydown', handleKeydown); // Enable keyboard input for player movement
@@ -525,14 +525,6 @@ function startComputerTurn() {
     }, 1000);
 
     computerMoveStep(); // Start the computer's movement step by step
-}
-
-/**
- * Updates the game timer, incrementing the timer variable every second during the gameplay.
- * This function is triggered at regular intervals using the timerInterval.
- */
-function updateTimer() {
-    timer++;
 }
 
 /**
