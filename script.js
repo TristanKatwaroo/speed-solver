@@ -349,6 +349,24 @@ document.querySelectorAll('.controls button').forEach(button => {
     });
 });
 
+// Allow the buttons to receive focus explicitly
+document.getElementById('start-button').setAttribute('tabindex', '0');
+document.getElementById('reset-button').setAttribute('tabindex', '0');
+
+// Attach event listeners to the document to capture keypresses globally
+document.addEventListener('keydown', function(event) {
+    console.log(`Key pressed: ${event.key}`);  // Debugging: Log the keypress
+    if (event.key === ' ' || event.key === 'Enter') {
+        if (gameState === 'default' && !gameStarted) {
+            event.preventDefault();
+            startGame();
+        } else if (gameState === 'ended') {
+            event.preventDefault();
+            resetGame();
+        }
+    }
+});
+
 function endGame() {
     if (timerInterval) {
         clearInterval(timerInterval);
@@ -549,7 +567,7 @@ function computerMoveStep() {
 
         let baseDelay = 0;
         let additionalDelay = 5 * Math.pow(6, optionsCount - 1);
-        additionalDelay += getRandomInt(0, 10 * Math.pow(3, optionsCount - 1));
+        additionalDelay += getRandomInt(0, 8 * Math.pow(3, optionsCount - 1));
 
         if (isStraightPath) {
             additionalDelay *= 0.5;
@@ -651,44 +669,40 @@ function hideElement(id) {
 
 // Leaderboard functions
 function saveToLeaderboard(name, time) {
+    const playerData = { name, time };
     fetch('http://localhost:3000/leaderboard', {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json',
         },
-        body: JSON.stringify({ name, time }),
+        body: JSON.stringify(playerData),
     })
     .then(response => response.json())
     .then(data => {
-        console.log('Leaderboard updated on server:', data);
-        loadLeaderboard(); // Reload leaderboard after update
+        loadLeaderboard();
     })
     .catch(() => {
-        console.log('Server unavailable, saving to local storage.');
         saveToLocalStorage(name, time);
+        console.log('Server unavailable, saving to local storage.');
     });
 }
 
 function saveToLocalStorage(name, time) {
     let leaderboard = JSON.parse(localStorage.getItem('leaderboard')) || [];
-    
     const existingPlayer = leaderboard.find(entry => entry.name === name);
+
     if (existingPlayer) {
-        // Update the score only if the new score is better
         if (time < existingPlayer.time) {
             existingPlayer.time = time;
         }
     } else {
-        // Add new player to the leaderboard
         leaderboard.push({ name, time });
     }
 
-    // Sort the leaderboard and keep only the top 10
     leaderboard.sort((a, b) => a.time - b.time);
-    leaderboard = leaderboard.slice(0, 10);
-
+    leaderboard.splice(10);
     localStorage.setItem('leaderboard', JSON.stringify(leaderboard));
-    loadLeaderboard(); // Reload leaderboard after update
+    loadLeaderboard();
 }
 
 function loadLeaderboard() {
@@ -714,5 +728,4 @@ function updateLeaderboardDisplay(leaderboard) {
     });
 }
 
-// Initialize the game in default state
 resetGame();
