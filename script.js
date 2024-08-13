@@ -866,7 +866,7 @@ function hideElement(id) {
  */
 function saveToLeaderboard(name, score) {
     const playerData = { name, score };  // Send score instead of time
-    fetch('http://localhost:3000/leaderboard', {
+    fetch('http://localhost:5000/leaderboard', {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json',
@@ -914,7 +914,7 @@ function saveToLocalStorage(name, score) {
  * If the server is unavailable, it falls back to loading the leaderboard from local storage.
  */
 function loadLeaderboard() {
-    fetch('http://localhost:3000/leaderboard')
+    fetch('http://localhost:5000/leaderboard')
     .then(response => response.json())
     .then(data => {
         updateLeaderboardDisplay(data);
