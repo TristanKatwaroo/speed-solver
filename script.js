@@ -349,13 +349,11 @@ document.querySelectorAll('.controls button').forEach(button => {
     });
 });
 
-// Allow the buttons to receive focus explicitly
 document.getElementById('start-button').setAttribute('tabindex', '0');
 document.getElementById('reset-button').setAttribute('tabindex', '0');
 
-// Attach event listeners to the document to capture keypresses globally
 document.addEventListener('keydown', function(event) {
-    console.log(`Key pressed: ${event.key}`);  // Debugging: Log the keypress
+    console.log(`Key pressed: ${event.key}`);
     if (event.key === ' ' || event.key === 'Enter') {
         if (gameState === 'default' && !gameStarted) {
             event.preventDefault();
