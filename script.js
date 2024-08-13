@@ -471,7 +471,7 @@ document.getElementById('reset-button').setAttribute('tabindex', '0');
 // Attach a keydown event listener to the entire document to listen for the Space or Enter keys being pressed.
 // This listener triggers the start or reset of the game depending on the current game state.
 document.addEventListener('keydown', function(event) {
-    console.log(`Key pressed: ${event.key}`);
+    // console.log(`Key pressed: ${event.key}`);
     
     // Check if the key pressed is either Space (' ') or Enter
     if (event.key === ' ' || event.key === 'Enter') {
@@ -731,30 +731,44 @@ function computerMoveStep() {
 }
 
 /**
- * Ends the computer's turn, calculates its score, and displays the game results, including the player's
- * and computer's performances in terms of path length and time taken.
+ * Ends the computer's turn and then calculates the player's score based on the player's performance
+ * relative to the computer's moves and time. It then displays the results on the screen.
  */
 function endComputerTurn() {
     hideElement('computer-turn-message');
-    computerScore = calculateScore(computerMoveCounter, computerTimer);
     displayResults();
 }
 
 /**
  * Calculates the final score based on the number of moves and the time taken.
- * The score is computed by adding the time and double the number of moves.
+ * Both the time and path length have a greater impact on the score.
  *
- * @param {number} moves - The number of moves made.
- * @param {number} time - The time taken in seconds.
+ * @param {number} playerMoves - The number of moves made by the player.
+ * @param {number} playerTime - The time taken by the player in seconds.
+ * @param {number} computerMoves - The number of moves made by the computer.
+ * @param {number} computerTime - The time taken by the computer in seconds.
  * @returns {number} - The calculated score.
  */
-function calculateScore(moves, time) {
-    return time + moves * 2;
+function calculateScore(playerMoves, playerTime, computerMoves, computerTime) {
+    // Calculate the time ratio (how much faster the player is compared to the computer)
+    const timeRatio = computerTime / playerTime;
+    
+    // Calculate the move ratio (how much shorter the player's path is compared to the computer's)
+    const moveRatio = computerMoves / playerMoves;
+
+    // Apply a multiplier to both the time ratio and the move ratio
+    const timeImpact = Math.pow(timeRatio, 2);
+    const moveImpact = Math.pow(moveRatio, 2);
+
+    // Calculate the final score, emphasizing both time and move impacts
+    const score = 1000 * timeImpact * moveImpact;
+
+    return Math.max(0, Math.round(score)); // Ensure the score is not negative and round it
 }
 
 /**
- * Displays the results of the game, comparing the player's and computer's performance.
- * The results include the path length and time taken for both the player and the computer.
+ * Displays the results of the game, comparing the player's performance relative to the computer's.
+ * The player's score is calculated based on how their moves and time compare to the computer's.
  */
 function displayResults() {
     const pathDifference = ((moveCounter - computerMoveCounter) / computerMoveCounter) * 100;
@@ -779,8 +793,11 @@ function displayResults() {
         timeMessage = `You solved the maze ${Math.abs(timeDifference.toFixed(1))}% faster than the computer.`;
     }
 
+    const playerScore = calculateScore(moveCounter, timer, computerMoveCounter, computerTimer);
+
     const resultElement = document.getElementById('results');
     resultElement.innerHTML = `
+        <strong>Your Score:</strong> ${playerScore}<br><br>
         <strong>Path Length:</strong><br>
         Your Path: ${moveCounter} cells<br>
         Computer's Path: ${computerMoveCounter} cells<br><br>
@@ -788,10 +805,10 @@ function displayResults() {
         Your Time: ${timer}s<br>
         Computer's Time: ${computerTimer}s<br><br>
         ${pathMessage}<br>
-        ${timeMessage}
+        ${timeMessage}<br><br>
     `;
 
-    saveToLeaderboard(currentPlayerName, timer);
+    saveToLeaderboard(currentPlayerName, playerScore);
 
     showElement('results');
     showElement('reset-button-container');
@@ -845,10 +862,10 @@ function hideElement(id) {
  * Otherwise, the score is saved to local storage.
  *
  * @param {string} name - The player's name.
- * @param {number} time - The player's time score.
+ * @param {number} score - The player's calculated score.
  */
-function saveToLeaderboard(name, time) {
-    const playerData = { name, time };
+function saveToLeaderboard(name, score) {
+    const playerData = { name, score };  // Send score instead of time
     fetch('http://localhost:3000/leaderboard', {
         method: 'POST',
         headers: {
@@ -861,7 +878,7 @@ function saveToLeaderboard(name, time) {
         loadLeaderboard();
     })
     .catch(() => {
-        saveToLocalStorage(name, time);
+        saveToLocalStorage(name, score);
         console.log('Server unavailable, saving to local storage.');
     });
 }
@@ -871,22 +888,23 @@ function saveToLeaderboard(name, time) {
  * The function ensures that only the best score for each player is kept and updates the leaderboard accordingly.
  *
  * @param {string} name - The player's name.
- * @param {number} time - The player's time score.
+ * @param {number} score - The player's score.
  */
-function saveToLocalStorage(name, time) {
+function saveToLocalStorage(name, score) {
     let leaderboard = JSON.parse(localStorage.getItem('leaderboard')) || [];
     const existingPlayer = leaderboard.find(entry => entry.name === name);
 
     if (existingPlayer) {
-        if (time < existingPlayer.time) {
-            existingPlayer.time = time;
+        if (score > existingPlayer.score) {
+            existingPlayer.score = score;
         }
     } else {
-        leaderboard.push({ name, time });
+        leaderboard.push({ name, score });
     }
 
-    leaderboard.sort((a, b) => a.time - b.time);
-    leaderboard.splice(10);
+    leaderboard.sort((a, b) => b.score - a.score);
+
+    leaderboard.splice(5);
     localStorage.setItem('leaderboard', JSON.stringify(leaderboard));
     loadLeaderboard();
 }
@@ -911,15 +929,21 @@ function loadLeaderboard() {
 /**
  * Updates the leaderboard display on the webpage by populating it with the latest data.
  * This function creates list items for each entry in the leaderboard and appends them to the leaderboard element.
+ * The list items are numbered to indicate their ranking.
  *
  * @param {Array} leaderboard - The array of leaderboard entries to display.
  */
 function updateLeaderboardDisplay(leaderboard) {
     const leaderboardList = document.getElementById('leaderboard-list');
     leaderboardList.innerHTML = '';
-    leaderboard.forEach(entry => {
+    
+    // Loop through the leaderboard entries and create a numbered list
+    leaderboard.forEach((entry, index) => {
         const listItem = document.createElement('li');
-        listItem.textContent = `${entry.name}: ${entry.time}s`;
+        
+        // Create the text for each list item, including the rank number
+        listItem.textContent = `${index + 1}. ${entry.name} — ${entry.score.toFixed(2)}`;
+        
         leaderboardList.appendChild(listItem);
     });
 }
