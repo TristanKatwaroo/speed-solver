@@ -1,25 +1,23 @@
 const express = require('express');
-const bodyParser = require('body-parser');
-const cors = require('cors');
-
+// const bodyParser = require('body-parser');
 const app = express();
 const PORT = 3000;
 
 let leaderboard = [];
 
-app.use(cors());
-app.use(bodyParser.json());
+// app.use(bodyParser.json());
+app.use(express.static('public'));
 
 app.get('/leaderboard', (req, res) => {
     res.json(leaderboard);
 });
 
 app.post('/leaderboard', (req, res) => {
-    const newEntry = req.body;
-    leaderboard.push(newEntry);
+    const { name, score } = req.body;
+    leaderboard.push({ name, score });
     leaderboard.sort((a, b) => a.score - b.score);
-    leaderboard = leaderboard.slice(0, 10); // Keep top 10 entries
-    res.status(201).send('Leaderboard updated');
+    leaderboard = leaderboard.slice(0, 10); // Keep top 10
+    res.status(200).send('Score added');
 });
 
 app.listen(PORT, () => {

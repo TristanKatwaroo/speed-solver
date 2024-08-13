@@ -166,7 +166,6 @@ function renderMaze() {
             const isComputerPath = computerVisualPath.some(([r, c]) => r === rowIndex && c === colIndex);
             const isSolverPath = path && path.some(([r, c]) => r === rowIndex && c === colIndex);
 
-            // Check for start and end points first
             if (isStart) {
                 cellElement.classList.add('start');
                 cellElement.setAttribute('aria-label', 'Start');
@@ -177,19 +176,15 @@ function renderMaze() {
                 cellElement.classList.add('wall');
                 cellElement.setAttribute('aria-label', 'Wall');
             } else if (isComputer) {
-                // Computer's current position, ensure it is shown on top
                 cellElement.classList.add('computer');
                 cellElement.setAttribute('aria-label', 'Computer');
             } else if (isPlayer) {
-                // Player's current position, ensure it is shown on top
                 cellElement.classList.add('player');
                 cellElement.setAttribute('aria-label', 'Player');
             } else if (isComputerPath) {
-                // Computer path overrides player path
                 cellElement.classList.add('computer-path');
                 cellElement.setAttribute('aria-label', 'Computer Path');
             } else if (isPlayerPath) {
-                // Player path is shown if computer hasn't traveled there
                 cellElement.classList.add('path');
                 cellElement.setAttribute('aria-label', 'Player Path');
             } else if (isSolverPath) {
@@ -214,7 +209,6 @@ function countMovementOptions(row, col) {
 }
 
 function startGame() {
-    // Validate player name input
     currentPlayerName = document.getElementById('player-name').value.trim();
     if (!currentPlayerName) {
         alert("Please enter your name before starting the game.");
@@ -229,8 +223,8 @@ function startGame() {
     hideElement('name-input-container');
     hideElement('leaderboard');
 
-    initializeGame(); // Generate and display the maze
-    showElement('maze'); // Show the maze during the countdown
+    initializeGame();
+    showElement('maze');
     showElement('countdown');
 
     let countdown = 3;
@@ -251,9 +245,9 @@ function startGame() {
 function startPlaying() {
     gameState = 'playing';
     hideElement('countdown');
-    hideElement('move-counter'); // Hide the move counter during the playing state
-    hideElement('timer'); // Hide the timer during the playing state
-    showElement('controls');  // Ensure controls are shown
+    hideElement('move-counter');
+    hideElement('timer');
+    showElement('controls');
 
     moveCounter = 0;
     timer = 0;
@@ -329,7 +323,6 @@ function handleKeyup(event) {
     }
 }
 
-// Add event listeners for keyup
 document.addEventListener('keyup', handleKeyup);
 
 document.querySelectorAll('.controls button').forEach(button => {
@@ -343,7 +336,6 @@ document.querySelectorAll('.controls button').forEach(button => {
         }
     });
 
-    // Add mouse down and mouse up events to trigger the press animation
     button.addEventListener('mousedown', () => {
         button.classList.add('pressed');
     });
@@ -352,7 +344,6 @@ document.querySelectorAll('.controls button').forEach(button => {
         button.classList.remove('pressed');
     });
 
-    // Ensure button returns to normal if the mouse leaves the button while pressed
     button.addEventListener('mouseleave', () => {
         button.classList.remove('pressed');
     });
@@ -365,23 +356,22 @@ function endGame() {
     }
     gameStarted = false;
 
-    // Remove the keyboard event listener when the game ends
     document.removeEventListener('keydown', handleKeydown);
 
-    startComputerTurn();  // Start computer's turn after the player finishes
+    startComputerTurn();
 }
 
 function startComputerTurn() {
     gameState = 'computerTurn';
-    hideElement('controls');  // Hide player controls
-    showElement('computer-turn-message');  // Show "Computer's turn!" message
+    hideElement('controls');
+    showElement('computer-turn-message');
 
     const fullPath = solveMaze(maze, START_POINT, endPoint);
     computerPath = fullPath.slice();
     computerPosition = [...START_POINT];
     computerMoveCounter = 0;
     computerTimer = 0;
-    computerVisualPath = [];  // Initialize the visual path as empty
+    computerVisualPath = [];
 
     computerTimerInterval = setInterval(() => {
         computerTimer++;
@@ -397,12 +387,11 @@ function updateTimer() {
 function handleMove(dr, dc, buttonElement = null) {
     if (isAnimating || !gameStarted) return;
 
-    // Trigger the button press animation if a button element is passed
     if (buttonElement) {
         buttonElement.classList.add('pressed');
         setTimeout(() => {
             buttonElement.classList.remove('pressed');
-        }, 100); // Remove class after animation completes
+        }, 100);
     }
 
     let newRow = playerPosition[0];
@@ -502,7 +491,7 @@ function initializeGame() {
     ensureEndPointAccessibility();
     playerPosition = [...START_POINT];
     playerPath = [playerPosition];
-    computerVisualPath = [];  // Clear computer's visual path here as well
+    computerVisualPath = [];
     path = null;
     renderMaze();
 }
@@ -557,19 +546,16 @@ function computerMoveStep() {
 
     if (newPath.length > 0) {
         const optionsCount = countMovementOptions(newRow, newCol);
-        console.log(`Computer has ${optionsCount} movement options at position (${newRow}, ${newCol})`);
 
         let baseDelay = 0;
         let additionalDelay = 5 * Math.pow(6, optionsCount - 1);
-        additionalDelay += getRandomInt(0, 8 * Math.pow(3, optionsCount - 1));
+        additionalDelay += getRandomInt(0, 10 * Math.pow(3, optionsCount - 1));
 
         if (isStraightPath) {
             additionalDelay *= 0.5;
         }
 
         let pauseTime = baseDelay + additionalDelay;
-
-        console.log(`Computer will pause for ${pauseTime}ms`);
 
         setTimeout(() => {
             animateMovement(newPath, 'computer');
@@ -578,7 +564,7 @@ function computerMoveStep() {
 }
 
 function endComputerTurn() {
-    hideElement('computer-turn-message');  // Hide the "Computer's turn!" message
+    hideElement('computer-turn-message');
     computerScore = calculateScore(computerMoveCounter, computerTimer);
     displayResults();
 }
@@ -638,22 +624,21 @@ function resetGame() {
     hideElement('results');
     hideElement('reset-button-container');
     hideElement('countdown');
-    hideElement('computer-turn-message'); // Hide computer's turn message
+    hideElement('computer-turn-message');
     showElement('start-button-container');
-    showElement('game-title');  // Show the game title in the default state
+    showElement('game-title');
     showElement('name-input-container');
     showElement('leaderboard');
 
-    // Clear paths and reset positions
     playerPath = [];
     computerVisualPath = [];
-    computerPath = []; // Reset the computed path
-    computerPosition = [...START_POINT]; // Reset the computer's position to the start point
-    computerMoveCounter = 0; // Reset the computer's move counter
-    computerTimer = 0; // Reset the computer's timer
-    computerScore = null; // Reset the computer's score
+    computerPath = [];
+    computerPosition = [...START_POINT];
+    computerMoveCounter = 0;
+    computerTimer = 0;
+    computerScore = null;
 
-    loadLeaderboard(); // Load the leaderboard
+    loadLeaderboard();
 }
 
 function showElement(id) {
@@ -667,8 +652,7 @@ function hideElement(id) {
 // Leaderboard functions
 function saveToLeaderboard(name, time) {
     const playerData = { name, time };
-    // Try saving to server first, if fails, save to local storage
-    fetch('/leaderboard', {
+    fetch('http://localhost:3000/leaderboard', {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json',
@@ -678,7 +662,7 @@ function saveToLeaderboard(name, time) {
     .then(response => response.json())
     .then(data => {
         console.log('Leaderboard updated on server:', data);
-        loadLeaderboard(); // Reload leaderboard after update
+        loadLeaderboard();
     })
     .catch(() => {
         console.log('Server unavailable, saving to local storage.');
@@ -686,17 +670,8 @@ function saveToLeaderboard(name, time) {
     });
 }
 
-function saveToLocalStorage(name, time) {
-    const leaderboard = JSON.parse(localStorage.getItem('leaderboard')) || [];
-    leaderboard.push({ name, time });
-    leaderboard.sort((a, b) => a.time - b.time);
-    leaderboard.splice(10); // Keep only top 10
-    localStorage.setItem('leaderboard', JSON.stringify(leaderboard));
-    loadLeaderboard(); // Reload leaderboard after update
-}
-
 function loadLeaderboard() {
-    fetch('/leaderboard')
+    fetch('http://localhost:3000/leaderboard')
     .then(response => response.json())
     .then(data => {
         updateLeaderboardDisplay(data);
@@ -706,6 +681,15 @@ function loadLeaderboard() {
         const leaderboard = JSON.parse(localStorage.getItem('leaderboard')) || [];
         updateLeaderboardDisplay(leaderboard);
     });
+}
+
+function saveToLocalStorage(name, time) {
+    const leaderboard = JSON.parse(localStorage.getItem('leaderboard')) || [];
+    leaderboard.push({ name, time });
+    leaderboard.sort((a, b) => a.time - b.time);
+    leaderboard.splice(10);
+    localStorage.setItem('leaderboard', JSON.stringify(leaderboard));
+    loadLeaderboard();
 }
 
 function updateLeaderboardDisplay(leaderboard) {

@@ -109,6 +109,60 @@ main {
     background-color: rgba(255, 69, 0, 0.3);
 }
 
+/* Input Box Styling */
+#name-input-container {
+    margin-bottom: 1rem;
+}
+
+#player-name {
+    padding: 10px;
+    font-size: 1rem;
+    border: 2px solid var(--color-tone-4);
+    border-radius: 4px;
+    background-color: var(--color-tone-6);
+    color: var(--color-tone-1);
+    width: 100%;
+    max-width: 300px;
+    box-sizing: border-box;
+}
+
+/* Leaderboard Styling */
+#leaderboard {
+    margin-top: 2rem;
+    padding: 10px;
+    background-color: var(--color-tone-6);
+    border-radius: 8px;
+    width: 100%;
+    max-width: 300px;
+    box-sizing: border-box;
+}
+
+#leaderboard h3 {
+    margin: 0 0 10px;
+    color: var(--color-tone-1);
+    font-size: 1.5rem;
+}
+
+#leaderboard-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    color: var(--color-tone-1);
+    font-size: 1rem;
+}
+
+#leaderboard-list li {
+    padding: 5px;
+    background-color: var(--color-tone-5);
+    border-radius: 4px;
+    margin-bottom: 5px;
+    text-align: left;
+}
+
+#leaderboard-list li:nth-child(odd) {
+    background-color: var(--color-tone-4);
+}
+
 #countdown {
     margin-top: 20px; /* Space between the maze and the countdown */
     font-size: 3rem;  /* Increase the font size for a larger countdown */

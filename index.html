@@ -10,17 +10,22 @@
     <main>
         <div class="game-container">
             <h1 id="game-title">Speed Solver</h1>
+            
             <div id="name-input-container">
                 <input type="text" id="player-name" placeholder="Enter your name">
             </div>
-            <div id="leaderboard">
-                <h3>Leaderboard</h3>
-                <ul id="leaderboard-list"></ul>
-            </div>                        
+
             <div id="start-button-container">
                 <button id="start-button" onclick="startGame()">Play</button>
             </div>
+
+            <div id="leaderboard" style="display: none;">
+                <h3>Leaderboard</h3>
+                <ul id="leaderboard-list"></ul>
+            </div>
+
             <div id="maze" role="grid" aria-label="Maze game board" style="display: none;"></div>
+
             <h1 id="countdown" style="display: none;"></h1>
             <div id="computer-turn-message" style="display: none;">Computer's turn!</div>
             <div id="move-counter" aria-label="Move Counter" style="display: none;">Cells Visited: 0</div>
@@ -30,8 +35,10 @@
                 <button onclick="handleMove(0, -1)" aria-label="Move left">←</button>
                 <button onclick="handleMove(1, 0)" aria-label="Move down">↓</button>
                 <button onclick="handleMove(0, 1)" aria-label="Move right">→</button>
-            </div>            
+            </div>
+
             <div id="results" style="display: none;"></div>
+
             <div id="reset-button-container" style="display: none;">
                 <button id="reset-button" onclick="resetGame()">Reset</button>
             </div>
