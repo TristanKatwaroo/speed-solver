@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Speed Solver</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <main>
+        <div class="game-container">
+            <h1 id="game-title">Speed Solver</h1>
+            <div id="name-input-container">
+                <input type="text" id="player-name" placeholder="Enter your name">
+            </div>
+            <div id="leaderboard">
+                <h3>Leaderboard</h3>
+                <ul id="leaderboard-list"></ul>
+            </div>                        
+            <div id="start-button-container">
+                <button id="start-button" onclick="startGame()">Play</button>
+            </div>
+            <div id="maze" role="grid" aria-label="Maze game board" style="display: none;"></div>
+            <h1 id="countdown" style="display: none;"></h1>
+            <div id="computer-turn-message" style="display: none;">Computer's turn!</div>
+            <div id="move-counter" aria-label="Move Counter" style="display: none;">Cells Visited: 0</div>
+            <div id="timer" aria-label="Timer" style="display: none;">Time: 0s</div>
+            <div id="controls" class="controls" style="display: none;">
+                <button onclick="handleMove(-1, 0)" aria-label="Move up">↑</button>
+                <button onclick="handleMove(0, -1)" aria-label="Move left">←</button>
+                <button onclick="handleMove(1, 0)" aria-label="Move down">↓</button>
+                <button onclick="handleMove(0, 1)" aria-label="Move right">→</button>
+            </div>            
+            <div id="results" style="display: none;"></div>
+            <div id="reset-button-container" style="display: none;">
+                <button id="reset-button" onclick="resetGame()">Reset</button>
+            </div>
+        </div>
+    </main>
+    <script src="script.js"></script>
+</body>
+</html>

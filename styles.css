@@ -1,0 +1,259 @@
+:root {
+    --color-tone-1: rgba(215, 218, 220, 1);
+    --color-tone-2: rgba(129, 131, 132, 1);
+    --color-tone-3: rgba(86, 87, 88, 1);
+    --color-tone-4: rgba(58, 58, 60, 1);
+    --color-tone-5: rgba(39, 39, 41, 1);
+    --color-tone-6: rgba(26, 26, 27, 1);
+    --color-tone-7: rgba(18, 18, 19, 1);
+    --green: rgba(83, 141, 78, 1);
+    --yellow: rgba(181, 159, 59, 1);
+    --darkendYellow: rgba(140, 124, 46, 1);
+    --orange: rgba(245, 121, 58, 1);
+    --blue: rgba(133, 193, 249, 1);
+    --blue-passive: rgba(133, 193, 249, 0.53);
+    --red: rgba(227, 70, 70, 1);
+    --lightGray: rgba(58, 58, 60, 1);
+    --gray: rgba(129, 131, 132, 1);
+    --darkGray: rgba(86, 87, 88, 1);
+    --white: rgba(215, 218, 220, 1);
+    --black: rgba(18, 18, 19, 1);
+    --color-background: rgba(18, 18, 19, 1);
+    --color-present: rgba(181, 159, 59, 1);
+    --color-correct: rgba(83, 141, 78, 1);
+    --key-bg: rgba(129, 131, 132, 1);
+    --key-text: rgba(215, 218, 220, 1);
+    --modal-content-bg: rgba(18, 18, 19, 1);
+    --cell-size: 20px;
+    --player-color: rgba(255, 65, 54, 1); 
+    --solver-color: rgba(217, 199, 0, 1);
+    --end-color: rgba(46, 204, 64, 1);
+    --wall-color: rgba(17, 17, 17, 1);
+    --path-color: rgba(255, 220, 0, 1);
+}
+
+body {
+    font-family: Arial, Helvetica, sans-serif;
+    text-align: center;
+    background-color: var(--color-background);
+    color: var(--color-tone-1);
+    margin: 0;
+    padding: 0;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+}
+
+main {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 1rem;
+}
+
+.game-container {
+    position: relative;
+    top: 20px; /* Adjust this value to position the maze closer to the top of the screen */
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 1rem;
+    width: 100%;
+    max-width: 500px;
+}
+
+#maze {
+    display: grid;
+    gap: 1px;
+    padding: 1px;
+    border-radius: 4px;
+    margin: 0 auto;
+    grid-template-columns: repeat(21, var(--cell-size)); /* Ensure the maze is displayed in rows and columns */
+}
+
+.cell {
+    width: var(--cell-size);
+    height: var(--cell-size);
+    border-radius: 2px;
+}
+
+.wall {
+    background-color: var(--color-tone-4);
+}
+
+.player {
+    background-color: var(--blue);
+}
+
+.start {
+    background-color: var(--yellow);
+}
+
+.end {
+    background-color: var(--green);
+}
+
+.path {
+    background-color: var(--blue-passive);
+}
+
+.solver-path {
+    background-color: var(--solver-color);
+}
+
+.computer {
+    background-color: rgba(255, 69, 0, 1); 
+}
+
+.computer-path {
+    background-color: rgba(255, 69, 0, 0.3);
+}
+
+#countdown {
+    margin-top: 20px; /* Space between the maze and the countdown */
+    font-size: 3rem;  /* Increase the font size for a larger countdown */
+    font-weight: bold;
+    color: var(--color-tone-1);
+}
+
+#results {
+    margin-top: 20px; /* Space between the maze and the results */
+}
+
+.controls {
+    margin-top: 20px; /* Space between the maze and the controls */
+}
+
+#start-button-container {
+    margin-top: 1rem;
+}
+
+#start-button {
+    padding: 10px 50px;
+    font-size: 1rem;
+    background-color: var(--green);
+    color: var(--white);
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+}
+
+#reset-button {
+    padding: 10px 50px;
+    font-size: 1rem;
+    background-color: var(--red);
+    color: var(--white);
+    border: none;
+    border-radius: 6px;
+    margin-bottom: 30px;
+}
+
+#timer {
+    font-size: 1.2rem;
+    font-weight: bold;
+    color: var(--white);
+    margin-bottom: 1rem;
+}
+
+#game-title {
+    font-size: 5rem;  /* Increase the font size for a larger countdown */
+    font-weight: bold;
+    color: var(--color-tone-1);
+}
+
+#computer-turn-message {
+    font-size: 2rem;
+    font-weight: bold;
+    /* color: var(--yellow); */
+    margin-top: 20px; /* Adjust the spacing as needed */
+}
+
+.controls {
+    display: grid;
+    grid-template-columns: repeat(3, 50px);
+    grid-template-rows: repeat(2, 50px);
+    gap: 0.5rem;
+    justify-items: center;
+    align-items: center;
+    display: none; /* Initially hidden */
+}
+
+button {
+    font-family: inherit;
+    font-weight: bold;
+    border: 0;
+    height: 50px;
+    width: 50px;
+    border-radius: 4px;
+    cursor: pointer;
+    user-select: none;
+    background-color: var(--key-bg);
+    color: var(--key-text);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    text-transform: uppercase;
+    transition: transform 0.1s ease; /* Smooth animation */
+}
+
+button:active,
+button.pressed {
+    transform: translateY(3px); /* Simulate button press by moving it down */
+    background-color: var(--color-tone-4); /* Darker background on press */
+}
+
+.controls button:nth-child(1) {
+    grid-area: 1 / 2; 
+}
+
+.controls button:nth-child(2) {
+    grid-area: 2 / 1; 
+}
+
+.controls button:nth-child(3) {
+    grid-area: 2 / 2; 
+}
+
+.controls button:nth-child(4) {
+    grid-area: 2 / 3; 
+}
+
+.solve-button {
+    grid-column: 1 / -1;
+    background-color: var(--green);
+    color: var(--white);
+}
+
+@media (max-width: 500px) {
+    :root {
+        --cell-size: 15px;
+    }
+
+    .controls {
+        max-width: 250px;
+    }
+
+    button {
+        height: 48px;
+    }
+}
+
+@media (min-width: 501px) and (max-width: 768px) {
+    :root {
+        --cell-size: 18px;
+    }
+}
+
+@media (min-width: 769px) {
+    :root {
+        --cell-size: 20px;
+    }
+
+    .game-container {
+        max-width: 600px;
+    }
+
+    .controls {
+        max-width: 300px;
+    }
+}
