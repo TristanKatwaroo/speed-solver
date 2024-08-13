@@ -651,23 +651,44 @@ function hideElement(id) {
 
 // Leaderboard functions
 function saveToLeaderboard(name, time) {
-    const playerData = { name, time };
     fetch('http://localhost:3000/leaderboard', {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json',
         },
-        body: JSON.stringify(playerData),
+        body: JSON.stringify({ name, time }),
     })
     .then(response => response.json())
     .then(data => {
         console.log('Leaderboard updated on server:', data);
-        loadLeaderboard();
+        loadLeaderboard(); // Reload leaderboard after update
     })
     .catch(() => {
         console.log('Server unavailable, saving to local storage.');
         saveToLocalStorage(name, time);
     });
+}
+
+function saveToLocalStorage(name, time) {
+    let leaderboard = JSON.parse(localStorage.getItem('leaderboard')) || [];
+    
+    const existingPlayer = leaderboard.find(entry => entry.name === name);
+    if (existingPlayer) {
+        // Update the score only if the new score is better
+        if (time < existingPlayer.time) {
+            existingPlayer.time = time;
+        }
+    } else {
+        // Add new player to the leaderboard
+        leaderboard.push({ name, time });
+    }
+
+    // Sort the leaderboard and keep only the top 10
+    leaderboard.sort((a, b) => a.time - b.time);
+    leaderboard = leaderboard.slice(0, 10);
+
+    localStorage.setItem('leaderboard', JSON.stringify(leaderboard));
+    loadLeaderboard(); // Reload leaderboard after update
 }
 
 function loadLeaderboard() {
@@ -681,15 +702,6 @@ function loadLeaderboard() {
         const leaderboard = JSON.parse(localStorage.getItem('leaderboard')) || [];
         updateLeaderboardDisplay(leaderboard);
     });
-}
-
-function saveToLocalStorage(name, time) {
-    const leaderboard = JSON.parse(localStorage.getItem('leaderboard')) || [];
-    leaderboard.push({ name, time });
-    leaderboard.sort((a, b) => a.time - b.time);
-    leaderboard.splice(10);
-    localStorage.setItem('leaderboard', JSON.stringify(leaderboard));
-    loadLeaderboard();
 }
 
 function updateLeaderboardDisplay(leaderboard) {
