@@ -25,7 +25,7 @@ Ensure you have the following installed on your machine:
 Clone the repository to your local machine:
 
 ```bash
-git clone https://github.com/yourusername/speed-solver.git
+git clone https://github.com/TristanKatwaroo/speed-solver.git
 ```
 
 Navigate to the project directory:
