@@ -40,7 +40,7 @@ You have two options to play the game:
 
 #### Option 1: Play Online
 
-Simply visit the hosted version of the game at: [Speed Solver Online](https://speed-solver.pages.dev/)
+Simply visit the hosted version of the game at: [https://speed-solver.pages.dev/](https://speed-solver.pages.dev/)
 
 #### Option 2: Run Locally
 
@@ -74,6 +74,6 @@ For an enhanced experience with server-side leaderboard functionalities, follow 
 
 4. Open your web browser and navigate to [http://localhost:5000](http://localhost:5000) to play the game with server-side support.
 
-   - **Note**: The client is configured to communicate with the Express server running on port 5000.
+   - **Note**: If the Express server is not running, it will save your data in your browser's local storage as a fallback.
 
 Enjoy the game and happy maze-solving!
