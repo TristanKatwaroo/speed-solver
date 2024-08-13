@@ -34,7 +34,7 @@ Navigate to the project directory:
 cd speed-solver
 ```
 
-## Running the Game
+## Running the Game (Frontend)
 
 You have two options to play the game:
 
@@ -46,7 +46,7 @@ Simply visit the hosted version of the game at: [https://speed-solver.pages.dev/
 
 1. Open the `index.html` file located in the project root directory with your preferred web browser.
 
-   - **Note**: Some browsers may have restrictions when running local files. If you encounter any issues, consider using a local server or proceed to run the Express server as described below.
+**Note**: The game expects an Express server but will use your browser's local storage as a fallback. Proceed to the [next section](#running-the-express-server) for Express server setup.
 
 ## Running the Express Server
 
