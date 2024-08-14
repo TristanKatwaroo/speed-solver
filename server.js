@@ -19,7 +19,7 @@ app.post('/leaderboard', (req, res) => {
     leaderboard.push({ name, score });
     leaderboard.sort((a, b) => b.score - a.score);
     leaderboard = leaderboard.slice(0, 5);
-    res.status(200).send('Score added');
+    res.status(200).json({ message: 'Score added' });
 });
 
 app.listen(PORT, () => {

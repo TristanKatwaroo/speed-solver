@@ -865,7 +865,7 @@ function hideElement(id) {
  * @param {number} score - The player's calculated score.
  */
 function saveToLeaderboard(name, score) {
-    const playerData = { name, score };  // Send score instead of time
+    const playerData = { name, score };
     fetch('http://localhost:5000/leaderboard', {
         method: 'POST',
         headers: {
@@ -873,11 +873,17 @@ function saveToLeaderboard(name, score) {
         },
         body: JSON.stringify(playerData),
     })
-    .then(response => response.json())
+    .then(response => {
+        if (!response.ok) {
+            throw new Error('Network response was not ok');
+        }
+        return response.json();
+    })
     .then(data => {
         loadLeaderboard();
     })
-    .catch(() => {
+    .catch(error => {
+        console.error('There was a problem with the fetch operation:', error);
         saveToLocalStorage(name, score);
         console.log('Server unavailable, saving to local storage.');
     });
